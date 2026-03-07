@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from routes.pacientes import router as rota_pacientes
-from routes.tickets import router as rota_tickets
+from app.routes.pacientes import router as rota_pacientes
+from app.routes.tickets import router as rota_tickets
 
 app = FastAPI()
 
