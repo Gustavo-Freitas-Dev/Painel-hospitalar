@@ -25,3 +25,15 @@ def create_ticket():
 @router.get("/queue")
 def get_queue():
     return tickets
+
+@router.post("/tickets/call-next")
+def call_next_ticket():
+    if not tickets:
+        return {"message": "Nenhum paciente na fila"}
+
+    next_ticket = tickets.pop(0)
+
+    return {
+        "message": "Próximo paciente chamado",
+        "ticket": next_ticket
+    }
