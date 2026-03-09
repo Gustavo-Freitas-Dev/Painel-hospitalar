@@ -1,39 +1,53 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from app.schemas.tickets_schemas import CriarTickets
+from app.routes.pacientes import pacientes
 
 router = APIRouter()
 
-tickets = []
-ticket_counter = 1
+fila_tickets = []
+contador_tickets = 1
+
 
 @router.post("/tickets")
-def create_ticket():
-    global ticket_counter
+def criar_ticket(dados: CriarTickets):
+    global contador_tickets
 
-    ticket_number = f"A{ticket_counter:03}"
+    paciente_encontrado = None
+
+    for paciente in pacientes:
+        if paciente["id"] == dados.id_paciente:
+            paciente_encontrado = paciente
+            break
+
+    if not paciente_encontrado:
+        raise HTTPException(status_code=404, detail="Paciente não encontrado")
 
     ticket = {
-        "ticket_number": ticket_number,
-        "status": "waiting"
+        "numero": contador_tickets,
+        "paciente": paciente_encontrado["nome"],
+        "status": "aguardando"
     }
 
-    tickets.append(ticket)
-
-    ticket_counter += 1
+    fila_tickets.append(ticket)
+    contador_tickets += 1
 
     return ticket
 
+
 @router.get("/queue")
-def get_queue():
-    return tickets
+def ver_fila():
+    return fila_tickets
+
 
 @router.post("/tickets/call-next")
-def call_next_ticket():
-    if not tickets:
-        return {"message": "Nenhum paciente na fila"}
+def chamar_proximo_ticket():
+    if not fila_tickets:
+        return {"mensagem": "Nenhum paciente na fila"}
 
-    next_ticket = tickets.pop(0)
+    proximo_ticket = fila_tickets.pop(0)
+    proximo_ticket["status"] = "chamado"
 
     return {
-        "message": "Próximo paciente chamado",
-        "ticket": next_ticket
+        "mensagem": "Próximo paciente chamado",
+        "ticket": proximo_ticket
     }
