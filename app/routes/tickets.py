@@ -25,6 +25,7 @@ def criar_ticket(dados: CriarTickets):
     ticket = {
         "numero": contador_tickets,
         "paciente": paciente_encontrado["nome"],
+        "urgencia": dados.urgencia,
         "status": "aguardando"
     }
 
