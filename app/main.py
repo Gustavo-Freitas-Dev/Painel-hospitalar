@@ -9,4 +9,4 @@ app.include_router(rota_tickets)
 
 @app.get('/')
 def home():
-    return {'mensagem': 'Api do painel hospitalar está rodando'}
+    return {'mensagem': 'Painel hospitalar está no ar. 🚀'}
